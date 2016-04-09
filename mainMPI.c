@@ -23,39 +23,14 @@
  */
 struct timespec start, end;
 
-char check(float s[3]) {
-    //#pragma omp parallel 
-    if (s[0] < lower || s[0] > upper) {
-        return 0;
-    } else if (s[1] < lower || s[1] > upper) {
-        return 0;
-    } else if (s[2] < lower || s[2] > upper) {
-        return 0;
-    } else
-        return 1;
-}
-
 int main(int argc, char** argv) {
 
     FILE *bin_file;
-    //kanw if gia na vrw ton arithmo
     int num = 15000000;
-
-    float **data = (float **) malloc(num * sizeof (float *));
-
     int k;
-    //#pragma omp parallel private(k,j)//reduction(+:counter)
-    // {
-
-
-    //#pragma omp parallel for private(k)
-    for (k = 0; k < num; k++) {
-        // printf("%d\n",i);
-        data[k] = (float *) malloc(3 * sizeof (float));
-    }
     char temp[100];
     int size, rank;
-            int j = 0;
+    int j = 0;
     MPI_Init(&argc, &argv);
     int c2;
     int counter = 0;
@@ -74,7 +49,7 @@ int main(int argc, char** argv) {
                 fseek(bin_file, 29, SEEK_CUR);
                 continue;
             }
-           // if(rank==1) printf("%d",num1);
+            // if(rank==1) printf("%d",num1);
             fseek(bin_file, 8, SEEK_CUR);
             fread(temp, 2, 1, bin_file);
             num1 = atoi(temp);
@@ -95,27 +70,15 @@ int main(int argc, char** argv) {
     } else {
         printf("Error opening the File");
     }
-     printf("\nrank %d counted  %d", rank, counter);
+    printf("\nrank %d counted  %d", rank, counter);
     MPI_Reduce(&counter, &c2, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-    fclose(bin_file);
-    /*  int threads;
-      int i = 0;
-     * fclose
-      //#pragma omp barrier
-  #pragma omp parallel for default(shared) private(i) reduction(+:counter)
-      for (i = 0; i < num; i++) {
-
-          if (check(data[i])) {
-
-              counter = counter + 1;
-          }
-      }
-
-      //}*/
+    if (rank == 0) {
+        fclose(bin_file);
+    }
     MPI_Finalize();
 
     clock_gettime(CLOCK_MONOTONIC, &end);
-   // printf("\nrank %d counted %d\n", rank, counter);
+    // printf("\nrank %d counted %d\n", rank, counter);
     if (rank == 0) {
         printf("\n%d\n", c2);
     }
@@ -129,7 +92,9 @@ int main(int argc, char** argv) {
                 DAS_NANO_SECONDS_IN_SEC + timeElapsed_n;
         timeElapsed_s--;
     }
+    if(rank==0){
     printf("Time: %ld.%09ld secs \n", timeElapsed_s, timeElapsed_n);
+    }
     return (EXIT_SUCCESS);
 }
 

@@ -22,17 +22,7 @@
  */
 struct timespec start, end;
 
-char check(float s[3]) {
-    //#pragma omp parallel 
-    if (s[0] < lower || s[0] > upper) {
-        return 0;
-    } else if (s[1] < lower || s[1] > upper) {
-        return 0;
-    } else if (s[2] < lower || s[2] > upper) {
-        return 0;
-    } else
-        return 1;
-}
+
 
 int main(int argc, char** argv) {
 
@@ -41,18 +31,8 @@ int main(int argc, char** argv) {
     int num = 15000000;
     int counter = 0;
     float **data = (float **) malloc(num * sizeof (float *));
-
     int k;
     int j;
-    //#pragma omp parallel private(k,j)//reduction(+:counter)
-    // {
-
-
-    //#pragma omp parallel for private(k)
-    for (k = 0; k < num; k++) {
-        // printf("%d\n",i);
-        data[k] = (float *) malloc(3 * sizeof (float));
-    }
     char temp[100];
     clock_gettime(CLOCK_MONOTONIC, &start);
 #pragma omp parallel private(bin_file,temp) //reduction(+:counter)
@@ -102,20 +82,7 @@ int main(int argc, char** argv) {
     }
    // fclose(bin_file)
 
-    /*  int threads;
-      int i = 0;
 
-      //#pragma omp barrier
-  #pragma omp parallel for default(shared) private(i) reduction(+:counter)
-      for (i = 0; i < num; i++) {
-
-          if (check(data[i])) {
-
-              counter = counter + 1;
-          }
-      }
-
-      //}*/
     clock_gettime(CLOCK_MONOTONIC, &end);
 
     printf("\n%d\n", counter);

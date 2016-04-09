@@ -23,36 +23,12 @@
  */
 struct timespec start, end;
 
-char check(float s[3]) {
-    //#pragma omp parallel 
-    if (s[0] < lower || s[0] > upper) {
-        return 0;
-    } else if (s[1] < lower || s[1] > upper) {
-        return 0;
-    } else if (s[2] < lower || s[2] > upper) {
-        return 0;
-    } else
-        return 1;
-}
-
 int main(int argc, char** argv) {
 
     FILE *bin_file;
     //kanw if gia na vrw ton arithmo
     int num = 15000000;
-
-    float **data = (float **) malloc(num * sizeof (float *));
-
     int k;
-    //#pragma omp parallel private(k,j)//reduction(+:counter)
-    // {
-
-
-    //#pragma omp parallel for private(k)
-    for (k = 0; k < num; k++) {
-        // printf("%d\n",i);
-        data[k] = (float *) malloc(3 * sizeof (float));
-    }
     char temp[100];
     int size, rank;
     int j = 0;
@@ -68,7 +44,7 @@ int main(int argc, char** argv) {
         int rank_set = (num / size) * rank;
         fseek(bin_file, (num / size) * rank * 31, SEEK_SET);
         printf("\n rank=%d starts at:%d at pos %d", rank, rank_set, (num / size) * rank);
-#pragma omp for private(num1,j) reduction(+:counter) 
+#pragma omp for private(num1,j,temp) reduction(+:counter) 
         for (j = 0; j < (num / size); j++) {
             fread(temp, 2, 1, bin_file);
             num1 = atoi(temp);
@@ -104,20 +80,6 @@ int main(int argc, char** argv) {
 
     MPI_Reduce(&counter, &c2, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
    // fclose(bin_file);
-    /*  int threads;
-      int i = 0;
-     * fclose
-      //#pragma omp barrier
-  #pragma omp parallel for default(shared) private(i) reduction(+:counter)
-      for (i = 0; i < num; i++) {
-
-          if (check(data[i])) {
-
-              counter = counter + 1;
-          }
-      }
-
-      //}*/
     MPI_Finalize();
 
     clock_gettime(CLOCK_MONOTONIC, &end);
@@ -135,7 +97,9 @@ int main(int argc, char** argv) {
                 DAS_NANO_SECONDS_IN_SEC + timeElapsed_n;
         timeElapsed_s--;
     }
+    if(rank==0){
     printf("Time: %ld.%09ld secs \n", timeElapsed_s, timeElapsed_n);
+    }
     return (EXIT_SUCCESS);
 }
 
