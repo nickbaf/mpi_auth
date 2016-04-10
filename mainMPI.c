@@ -6,7 +6,7 @@
 
 /* 
  * File:   main.c
- * Author: Nikolaos Mamais(2371),Nikolaos Bafatakis(2383),Panagiotis Maroulidis(2431)
+ * Author: baf
  *
  * Created on March 19, 2016, 1:30 PM
  */
@@ -31,12 +31,17 @@ int main(int argc, char** argv) {
     char temp[100];
     int size, rank;
     int j = 0;
+    if(argc!=6){
+        printf("Wrong Arguments\n");
+        return (EXIT_FAILURE);
+    }
+        num=atoi(argv[1]);
     MPI_Init(&argc, &argv);
     int c2;
     int counter = 0;
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    if ((bin_file = fopen("datafile"/*argv[1]*/, "r+")) != NULL) {
+    if ((bin_file = fopen(argv[3], "r+")) != NULL) {
         int num1;
         clock_gettime(CLOCK_MONOTONIC, &start);
         int rank_set = (num / size) * rank;

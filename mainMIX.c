@@ -6,7 +6,7 @@
 
 /* 
  * File:   main.c
- * Author: Nikolaos Mamais(2371),Nikolaos Bafatakis(2383),Panagiotis Maroulidis(2431)
+ * Author: baf
  *
  * Created on March 19, 2016, 1:30 PM
  */
@@ -32,6 +32,11 @@ int main(int argc, char** argv) {
     char temp[100];
     int size, rank;
     int j = 0;
+    if (argc != 6) {
+        printf("Wrong Arguments\n");
+        return (EXIT_FAILURE);
+    }
+    num = atoi(argv[1]);
     MPI_Init(&argc, &argv);
     int c2;
     int counter = 0;
@@ -73,13 +78,13 @@ int main(int argc, char** argv) {
     } else {
         printf("Error opening the File");
     }
-    #pragma omp barrier
+#pragma omp barrier
     printf("\nrank %d counted  %d", rank, counter);
-    
+
     MPI_Barrier(MPI_COMM_WORLD);
 
     MPI_Reduce(&counter, &c2, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-   // fclose(bin_file);
+    // fclose(bin_file);
     MPI_Finalize();
 
     clock_gettime(CLOCK_MONOTONIC, &end);
@@ -97,8 +102,8 @@ int main(int argc, char** argv) {
                 DAS_NANO_SECONDS_IN_SEC + timeElapsed_n;
         timeElapsed_s--;
     }
-    if(rank==0){
-    printf("Time: %ld.%09ld secs \n", timeElapsed_s, timeElapsed_n);
+    if (rank == 0) {
+        printf("Time: %ld.%09ld secs \n", timeElapsed_s, timeElapsed_n);
     }
     return (EXIT_SUCCESS);
 }

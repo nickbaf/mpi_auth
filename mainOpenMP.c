@@ -6,7 +6,7 @@
 
 /* 
  * File:   main.c
- * Author: Nikolaos Mamais(2371),Nikolaos Bafatakis(2383),Panagiotis Maroulidis(2431)
+ * Author: baf
  *
  * Created on March 19, 2016, 1:30 PM
  */
@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <omp.h>
 #include <time.h>
+#include <math.h>
 #define upper 30
 #define lower 12
 /*
@@ -28,22 +29,26 @@ int main(int argc, char** argv) {
 
     FILE *bin_file;
     //kanw if gia na vrw ton arithmo
-    int num = 15000000;
+    int num ;//= 15000000;
     int counter = 0;
-    float **data = (float **) malloc(num * sizeof (float *));
     int k;
     int j;
     char temp[100];
     clock_gettime(CLOCK_MONOTONIC, &start);
-#pragma omp parallel private(bin_file,temp) 
-    if ((bin_file = fopen("datafile"/*argv[1]*/, "r+")) != NULL) {
+    if(argc!=6){
+        printf("Wrong Arguments\n");
+        return (EXIT_FAILURE);
+    }
+        k=0;
+        num=atoi(argv[1]);
+#pragma omp parallel private(bin_file,temp) //reduction(+:counter)
+    if ((bin_file = fopen(argv[3], "r+")) != NULL) {
         int num1;
-
-
 #pragma omp for private(j,num1) reduction(+:counter) 
-      
-        for (j = 0; j < num; j++) {
-  
+       // printf("%d %d",num,k);
+        //fflush(stdout);
+      //  fseek(bin_file, SEEK_SET, 0);
+       for (j=k; j < num; j++){
             // fseek(bin_file,(j)*31 ,SEEK_SET );
             fread(temp, 2, 1, bin_file);
             num1 = atoi(temp);
@@ -75,11 +80,13 @@ int main(int argc, char** argv) {
             fseek(bin_file,(j+1)*31, SEEK_SET);
             counter = counter + 1;
 
+           
         }
     } else {
         printf("Error opening the File");
     }
-   // fclose(bin_file)
+#pragma omp barrier
+    fclose(bin_file);
 
 
     clock_gettime(CLOCK_MONOTONIC, &end);
