@@ -26,7 +26,6 @@ struct timespec start, end;
 int main(int argc, char** argv) {
 
     FILE *bin_file;
-    //kanw if gia na vrw ton arithmo
     int num = 15000000;
     int k;
     char temp[100];
@@ -42,8 +41,8 @@ int main(int argc, char** argv) {
     int counter = 0;
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-#pragma omp parallel private(bin_file,temp) //reduction(+:counter)
-    if ((bin_file = fopen("datafile"/*argv[1]*/, "r+")) != NULL) {
+#pragma omp parallel private(bin_file,temp) 
+    if ((bin_file = fopen(argv[3], "r+")) != NULL) {
         int num1;
         clock_gettime(CLOCK_MONOTONIC, &start);
         int rank_set = (num / size) * rank;
@@ -84,11 +83,9 @@ int main(int argc, char** argv) {
     MPI_Barrier(MPI_COMM_WORLD);
 
     MPI_Reduce(&counter, &c2, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-    // fclose(bin_file);
     MPI_Finalize();
 
     clock_gettime(CLOCK_MONOTONIC, &end);
-    // printf("\nrank %d counted %d\n", rank, counter);
     if (rank == 0) {
         printf("\n%d\n", c2);
     }
