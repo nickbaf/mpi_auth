@@ -35,14 +35,13 @@ int main(int argc, char** argv) {
     int j;
     char temp[100];
     clock_gettime(CLOCK_MONOTONIC, &start);
-#pragma omp parallel private(bin_file,temp) //reduction(+:counter)
+#pragma omp parallel private(bin_file,temp) 
     if ((bin_file = fopen("datafile"/*argv[1]*/, "r+")) != NULL) {
-        //printf("hjfdnk\n");
-        //#pragma omp parallel for private(j)
-       //fseek(bin_file,(j)*31 ,SEEK_SET );// fseek(bin_file, SEEK_SET, 0);
         int num1;
+
+
 #pragma omp for private(j,num1) reduction(+:counter) 
-      //  fseek(bin_file, SEEK_SET, 0);
+      
         for (j = 0; j < num; j++) {
   
             // fseek(bin_file,(j)*31 ,SEEK_SET );
