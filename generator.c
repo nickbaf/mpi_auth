@@ -6,7 +6,7 @@
 
 /* 
  * File:   main.c
- * Author: Baf
+ * Author: Nikolaos Mamais(2371),Nikolaos Bafatakis(2383),Panagiotis Maroylidis(2431)
  *
  * Created on 1 Μαρτίου 2016, 4:48 μμ
  */
