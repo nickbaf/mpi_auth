@@ -56,7 +56,6 @@ int main(int argc, char** argv) {
                 fseek(bin_file, 29, SEEK_CUR);
                 continue;
             }
-            // if(rank==1) printf("%d",num1);
             fseek(bin_file, 8, SEEK_CUR);
             fread(temp, 2, 1, bin_file);
             num1 = atoi(temp);
