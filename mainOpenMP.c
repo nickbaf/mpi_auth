@@ -28,8 +28,7 @@ struct timespec start, end;
 int main(int argc, char** argv) {
 
     FILE *bin_file;
-    //kanw if gia na vrw ton arithmo
-    int num ;//= 15000000;
+    int num ;
     int counter = 0;
     int k;
     int j;
@@ -41,15 +40,11 @@ int main(int argc, char** argv) {
     }
         k=0;
         num=atoi(argv[1]);
-#pragma omp parallel private(bin_file,temp) //reduction(+:counter)
+#pragma omp parallel private(bin_file,temp) 
     if ((bin_file = fopen(argv[3], "r+")) != NULL) {
         int num1;
 #pragma omp for private(j,num1) reduction(+:counter) 
-       // printf("%d %d",num,k);
-        //fflush(stdout);
-      //  fseek(bin_file, SEEK_SET, 0);
        for (j=k; j < num; j++){
-            // fseek(bin_file,(j)*31 ,SEEK_SET );
             fread(temp, 2, 1, bin_file);
             num1 = atoi(temp);
             if (num1 < 12 || num1 > 30) {
@@ -76,7 +71,6 @@ int main(int argc, char** argv) {
                 fseek(bin_file,(j+1)*31, SEEK_SET);
                 continue;
             }
-            //fseek(bin_file,9, SEEK_SET);
             fseek(bin_file,(j+1)*31, SEEK_SET);
             counter = counter + 1;
 
