@@ -54,7 +54,6 @@ int main(int argc, char** argv) {
                 fseek(bin_file, 29, SEEK_CUR);
                 continue;
             }
-            // if(rank==1) printf("%d",num1);
             fseek(bin_file, 8, SEEK_CUR);
             fread(temp, 2, 1, bin_file);
             num1 = atoi(temp);
@@ -83,7 +82,6 @@ int main(int argc, char** argv) {
     MPI_Finalize();
 
     clock_gettime(CLOCK_MONOTONIC, &end);
-    // printf("\nrank %d counted %d\n", rank, counter);
     if (rank == 0) {
         printf("\n%d\n", c2);
     }
